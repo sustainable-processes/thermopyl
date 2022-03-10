@@ -67,11 +67,11 @@ setup(name='thermopyl',
       zip_safe=False,
       ext_modules=extensions,
       install_requires=[
-        'six',
-        'pandas',
+        'six>=1.0',
+        'pandas>=1.0',
         'pyxb==1.2.4',
-        'feedparser',
-        'pyarrow'
+        'feedparser>=6.0',
+        'pyarrow>=7.0.0'
         ],
       entry_points={'console_scripts': [
             'thermoml-update-mirror = thermopyl.scripts.update_archive:main',
