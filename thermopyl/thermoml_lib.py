@@ -41,7 +41,7 @@ class Parser(object):
             ePropPhase_dict = {}
             for Property in PureOrMixtureData.Property:
                 nPropNumber = Property.nPropNumber
-                ePropName = Property.Property_MethodID.PropertyGroup.content()[0].ePropName  # ASSUMING LENGTH 1
+                ePropName = Property.Property_MethodID.PropertyGroup.orderedContent()[0].value.ePropName  # ASSUMING LENGTH 1
                 property_dict[nPropNumber] = ePropName
                 ePropPhase = Property.PropPhaseID[0].ePropPhase  # ASSUMING LENGTH 1
                 ePropPhase_dict[nPropNumber] = ePropPhase
@@ -74,8 +74,8 @@ class Parser(object):
             for Variable in PureOrMixtureData.Variable:
                 nVarNumber = Variable.nVarNumber
                 VariableType = Variable.VariableID.VariableType
-                assert len(VariableType.content()) == 1
-                vtype = VariableType.content()[0]  # Assume length 1, haven't found counterexample yet.
+                assert len(VariableType.orderedContent()) == 1
+                vtype = VariableType.orderedContent()[0].value  # Assume length 1, haven't found counterexample yet.
                 variable_dict[nVarNumber] = vtype
                 if vtype in ["Mole fraction", "Mass Fraction", "Molality, mol/kg", "Solvent: Amount concentration (molarity), mol/dm3"]:
                     nOrgNum = Variable.VariableID.RegNum.nOrgNum

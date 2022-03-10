@@ -1,5 +1,6 @@
 import os
 from pkg_resources import resource_filename
+import logging
 
 def get_fn(name):
     """Get the full path to one of the reference files shipped for testing
@@ -46,13 +47,14 @@ def build_pandas_dataframe(filenames):
         Compounds dataframe
 
     """
+    logger = logging.getLogger(__name__)
     import pandas as pd
     from thermopyl import Parser
 
     data = []
     compound_dict = {}
     for filename in filenames:
-        print(filename)
+        logger.info(f"Parsing {filename}")
         try:
             parser = Parser(filename)
             current_data = parser.parse()
@@ -60,10 +62,10 @@ def build_pandas_dataframe(filenames):
             data.append(current_data)
             compound_dict.update(parser.compound_name_to_formula)
         except Exception as e:
-            print(e)
+            logger.error(e)
 
     data = pd.concat(data, copy=False, ignore_index=True)  # Because the input data is a list of DataFrames, this saves a LOT of memory!  Ignore the index to return unique index.
-    compounds = pd.Series(compound_dict)
+    compounds = pd.Series(compound_dict).to_frame().rename(columns={0: "formula"})
     return [data, compounds]
 
 def pandas_dataframe(thermoml_path=None):
@@ -86,14 +88,14 @@ def pandas_dataframe(thermoml_path=None):
         # Try to obtain the path to the local ThermoML Archive mirror from an environment variable.
         if 'THERMOML_PATH' in os.environ:
             # Check THERMOML_PATH environment variable
-            hdf5_filename = os.path.join(os.environ["THERMOML_PATH"], 'data.h5')
+            parquet_filename = os.path.join(os.environ["THERMOML_PATH"], 'data.pq')
         else:
             # Use default path of ~/.thermoml
-            hdf5_filename = os.path.join(os.environ["HOME"], '.thermoml', 'data.h5')
+            parquet_filename = os.path.join(os.environ["HOME"], '.thermoml', 'data.pq')
     else:
-        hdf5_filename = os.path.join(thermoml_path, 'data.h5')
+        parquet_filename = os.path.join(thermoml_path, 'data.pq')
 
-    if not os.path.exists(hdf5_filename):
+    if not os.path.exists(parquet_filename):
         if thermoml_path is None:
             msg  = 'Could not find `data.h5` in either $THERMOML_PATH or ~/.thermoml\n'
             msg += 'Make sure you have run `thermoml-build-pandas` and it has completed successfully'
@@ -102,6 +104,6 @@ def pandas_dataframe(thermoml_path=None):
         raise Exception(msg)
 
     import pandas as pd
-    df = pd.read_hdf(hdf5_filename)
+    df = pd.read_parquet(parquet_filename)
 
     return df

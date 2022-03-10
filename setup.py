@@ -9,7 +9,6 @@ import os
 import sys
 import glob
 import traceback
-import numpy as np
 from os.path import join as pjoin
 from setuptools import setup, Extension, find_packages
 try:
@@ -62,7 +61,7 @@ setup(name='thermopyl',
       version=__version__,
       url='https://github.com/choderalab/thermopyl',
       platforms=['Linux', 'Mac OS-X', 'Unix'],
-      classifiers=CLASSIFIERS.splitlines(),
+    #   classifiers=CLASSIFIERS.splitlines(),
       packages=['thermopyl', 'thermopyl.tests', 'thermopyl.scripts'],
       package_data={'thermopyl': ['data/*']},  # Install all data directories of the form /data/
       zip_safe=False,
@@ -72,7 +71,7 @@ setup(name='thermopyl',
         'pandas',
         'pyxb==1.2.4',
         'feedparser',
-        'tables',
+        'pyarrow'
         ],
       entry_points={'console_scripts': [
             'thermoml-update-mirror = thermopyl.scripts.update_archive:main',
