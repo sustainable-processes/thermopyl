@@ -56,8 +56,8 @@ class Parser(object):
                 nConstraintValue = Constraint.nConstraintValue
                 ConstraintType = Constraint.ConstraintID.ConstraintType
                 
-                assert len(ConstraintType.content()) == 1
-                constraint_type = ConstraintType.content()[0]
+                assert len(ConstraintType.orderedContent()) == 1
+                constraint_type = ConstraintType.orderedContent()[0].value
                 state[constraint_type] = nConstraintValue
                 
                 if constraint_type in ["Mole fraction", "Mass Fraction", "Molality, mol/kg", "Solvent: Amount concentration (molarity), mol/dm3"]:
