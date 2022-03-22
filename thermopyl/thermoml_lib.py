@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 import re
 import copy
@@ -16,17 +17,21 @@ class Parser(object):
         """Extract and store compounds from a thermoml XML file."""
         self.compound_num_to_name = {}
         self.compound_name_to_formula = {}
+        self.compound_num_to_inchi = {}
         for Compound in self.root.Compound:
             nOrgNum = Compound.RegNum.nOrgNum
             sCommonName = Compound.sCommonName[0]
             sFormulaMolec = Compound.sFormulaMolec
+            sInChi = Compound.sStandardInChI
 
             self.compound_num_to_name[nOrgNum] = sCommonName
             self.compound_name_to_formula[sCommonName] = sFormulaMolec
+            self.compound_num_to_inchi[nOrgNum] = sInChi
 
     def parse(self):
         """Parse the current XML filename and return a list of measurements."""
         alldata = []
+        component_inchis = []
         for PureOrMixtureData in self.root.PureOrMixtureData:
             components = []
             for Component in PureOrMixtureData.Component:
@@ -34,6 +39,7 @@ class Parser(object):
                 nOrgNum = Component.RegNum.nOrgNum
                 sCommonName = self.compound_num_to_name[nOrgNum]
                 components.append(sCommonName)
+                component_inchis.append(self.compound_num_to_inchi[nOrgNum])
 
             components_string = "__".join(components)
 
@@ -47,6 +53,7 @@ class Parser(object):
                 ePropPhase_dict[nPropNumber] = ePropPhase
 
             state = dict(filename=self.filename, components=components_string)
+            state.update({f"component_{i+1}_inchi": inchi for i, inchi in enumerate(component_inchis[:4])})
             
             state["Pressure, kPa"] = None  # This is the only pressure unit used in ThermoML
             state['Temperature, K'] = None  # This is the only temperature unit used in ThermoML

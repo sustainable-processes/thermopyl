@@ -100,7 +100,7 @@ def pandas_dataframe(thermoml_path=None):
             msg  = 'Could not find `data.h5` in either $THERMOML_PATH or ~/.thermoml\n'
             msg += 'Make sure you have run `thermoml-build-pandas` and it has completed successfully'
         else:
-            msg  = 'Could not find `data.h5` in specified path `%s`' % thermoml_path
+            msg  = 'Could not find `data.pq` in specified path `%s`' % thermoml_path
         raise Exception(msg)
 
     import pandas as pd
