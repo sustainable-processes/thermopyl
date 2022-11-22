@@ -71,7 +71,7 @@ setup(name='thermopyl',
         'pandas>=1.0',
         'pyxb==1.2.4',
         'feedparser>=6.0',
-        'pyarrow>=7.0.0'
+        'pyarrow>=6.0.0'
         ],
       entry_points={'console_scripts': [
             'thermoml-update-mirror = thermopyl.scripts.update_archive:main',
